@@ -1,3 +1,7 @@
+//Luísa dos Santos da Silva
+//Charqueadas - RS
+//luisasasilva19@gmail.com
+
 let olympicsMedalTable = [
     { id: 1, country: "BRASIL", gold: 7, silver: 6, bronze: 6, continent: "AMERICA DO SUL" },
     { id: 2, country: "USA", gold: 46, silver: 37, bronze: 17, continent: "AMERICA DO NORTE" },
@@ -11,41 +15,102 @@ let olympicsMedalTable = [
     { id: 10, country: "QUÊNIA", gold: 6, silver: 6, bronze: 1, continent: "AFRICA" },
 ];
 
+
+//Para criar os custom usei o polyfill no final da página de exemplo de cada um.
+//Não consegui compreender totalmente a lógica, mas consegui fazer funcionar juntando
+//com os exemplos de cada página e implementar alguns dos desafios
 Array.prototype.customFind = function (predicate) {
-    // Implemente aqui seu algoritmo
+    var list = Object(this);
+    var length = list.length >>> 0;
+    var thisArg = arguments[1];
+    var value;
+
+    for (var i = 0; i < length; i++) {
+        value = list[i];
+        if (predicate.call(thisArg, value, i, list)) {
+            return value;
+        }
+    }
+
     return null;
 }
 
 Array.prototype.customSome = function (predicate) {
-    // Implemente aqui seu algoritmo
+    'use strict';
+
+    var t = Object(this);
+    var len = t.length >>> 0;
+
+    var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+    for (var i = 0; i < len; i++) {
+        if (i in t && predicate.call(thisArg, t[i], i, t)) {
+            return true;
+        }
+    }
+
     return false;
 }
 
 Array.prototype.customFilter = function (predicate) {
-    // Implemente aqui seu algoritmo
-    return [];
-}
+    'use strict';
+    var t = Object(this);
+    var len = t.length >>> 0;
+    var res = [];
+    var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+    for (var i = 0; i < len; i++) {
+        if (i in t) {
+            var val = t[i];
+            if (predicate.call(thisArg, val, i, t)) {
+                res.push(val);
+            }
+        }
+    }
+
+    return res;
+};
 
 Array.prototype.customMap = function (callback) {
-    // Implemente aqui seu algoritmo
-    return [];
-}
+
+    var T, A, k;
+    var O = Object(this);
+    var len = O.length >>> 0;
+
+    A = new Array(len);
+    k = 0;
+
+    while (k < len) {
+        var kValue, mappedValue;
+        if (k in O) {
+            kValue = O[k];
+            mappedValue = callback.call(T, kValue, k, O);
+            A[k] = mappedValue;
+        }
+        k++;
+    }
+    return A;
+};
 
 Array.prototype.customReduce = function (callback, initialValue) {
-    // Implemente aqui seu algoritmo
-    return null;
-}
-
-// Código modelo utilizando filter, map e reduce
-
-const resultFilterMapReduce = olympicsMedalTable.filter(i => i.continent === "ASIA") // JAPÃO e CHINA 
-    .map(i => i.gold) // 26 e 12
-    .reduce((total, quantity) => total + quantity); // 38
-
-console.log(`Medalhas de Ouro no continente Asiático: ${resultFilterMapReduce}`);
-
-
-// Implemente as funções customizadas - customFilter, customMap e customReduce e verique se o retorno é igual ao do código modelo
+    'use strict';
+    var t = Object(this), len = t.length >>> 0, k = 0, value;
+    if (arguments.length == 2) {
+        value = arguments[1];
+    } else {
+        while (k < len && !(k in t)) {
+            k++;
+        }
+        if (k >= len) {
+            throw new TypeError('Reduce possui um array vazio sem um valor inicial');
+        }
+        value = t[k++];
+    }
+    for (; k < len; k++) {
+        if (k in t) {
+            value = callback(value, t[k], k, t);
+        }
+    }
+    return value;
+};
 
 const resultByCustomFilterMapReduce = olympicsMedalTable.customFilter(i => i.continent === "ASIA")
     .customMap(i => i.gold)
@@ -55,22 +120,26 @@ console.log(`Resultado custom - Medalhas de Ouro no continente Asiático: ${resu
 
 /* DESAFIOS - CONCLUA AS FUNÇÕES customSome, customFind E UTILIZANDO TODAS AS FUNÇÕES 'CUSTOM' CONCLUA OS DESAFIOS ABAIXO: */
 
-// 1 - Crie um algoritmo que encontre o único pais do continente Africano
-// const paisAfricano =  <seu código aqui>;
-// console.log(paisAfricano);
+console.log("1 - Crie um algoritmo que encontre o único pais do continente Africano");
+const paisAfricano = olympicsMedalTable.customFind(i => i.continent == "AFRICA");
+console.log(paisAfricano);
 
-// 2 - Crie um algoritmo que retorne o total de medalhas por país
-// const medalhasPorPais =  <seu código aqui>;
+//não consegui fazer este, acho que era necessário usar filter, map e reduce
+// console.log("2 - Crie um algoritmo que retorne o total de medalhas por país");
+// const medalhasPorPais = ;
 // console.log(medalhasPorPais);
 
-// 3 - Crie um algoritmo para encontrar os países que conquistaram mais que 10 medalhas de ouro
-// const paisesCom10MedalhasOuroNoMinimo =  <seu código aqui>;
-// console.log(paisesCom10MedalhasOuroNoMinimo);
+console.log("3 - Crie um algoritmo para encontrar os países que conquistaram mais que 10 medalhas de ouro");
+const paisesCom10MedalhasOuroNoMinimo =  olympicsMedalTable.customFilter(i => i.gold > 10);
+console.log(paisesCom10MedalhasOuroNoMinimo);
 
-// 4 - Crie um algoritmo para encontrar os países que conquistaram no minímo 30 medalhas (Ouro, Prata e Bronze)
-// const paisesCom30MedalhasNoMinimo =  <seu código aqui>;
+//não consegui fazer este
+//console.log("4 - Crie um algoritmo para encontrar os países que conquistaram no minímo 30 medalhas (Ouro, Prata e Bronze)");
+// const paisesCom30MedalhasNoMinimo =  ;
 // console.log(paisesCom30MedalhasNoMinimo);
 
-// 5 - Crie um algoritmo para verificar se o continente América do Sul conquistou pelo menos 20 medalhas de ouro
-// const paisesComPeloMenos20MedalhasDeOUro =  <seu código aqui>;
-// console.log(paisesComPeloMenos20MedalhasDeOUro);
+console.log("5 - Crie um algoritmo para verificar se o continente América do Sul conquistou pelo menos 20 medalhas de ouro")
+const paisesComPeloMenos20MedalhasDeOuro = olympicsMedalTable.customFilter(i => i.continent === "AMERICA DO SUL")
+.customMap(i => i.gold)
+.customSome(i => i >= 20);
+console.log(paisesComPeloMenos20MedalhasDeOuro);
